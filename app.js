@@ -1,41 +1,66 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors'); // Added for cross-origin support
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const connectDB = require('./middleware/db');
+const app = express();
 
-var app = express();
+// Initialize Database Connection
+connectDB();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// 1. CORS Configuration (Allows port 8081 to communicate with this server)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
+// Add this right after app.use(cors(...))
+app.use((req, res, next) => {
+  console.log(`>>> Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
+
+// Health Check Endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ success: true, status: 'Server is running' });
+});
+
+
+// 2. Standard Middleware
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json()); // Essential for parsing login/signup data
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
+// 3. Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-// catch 404 and forward to error handler
+// 4. API-Friendly Error Handling
+// Since you are building a backend for a mobile app, we should return JSON, not render Jade pages.
+
+// Catch 404
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// Error Handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
+  // Set error details for development
+  const errorDetails = req.app.get('env') === 'development' ? err : {};
+  
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    success: false,
+    message: err.message,
+    error: errorDetails
+  });
 });
 
 module.exports = app;
