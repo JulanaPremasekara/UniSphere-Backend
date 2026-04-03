@@ -7,6 +7,7 @@ const cors = require('cors'); // Added for cross-origin support
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const eventsRouter = require('./routes/events');
 const connectDB = require('./middleware/db');
 const app = express();
 
@@ -34,13 +35,14 @@ app.get('/health', (req, res) => {
 
 // 2. Standard Middleware
 app.use(logger('dev'));
-app.use(express.json()); // Essential for parsing login/signup data
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' })); // Increased limit for image uploads
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 
 // 3. Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/events', eventsRouter);
 
 // 4. API-Friendly Error Handling
 // Since you are building a backend for a mobile app, we should return JSON, not render Jade pages.
