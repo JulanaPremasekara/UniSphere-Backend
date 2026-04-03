@@ -61,7 +61,7 @@ class AuthService {
   static generateAccessToken(user) {
     const secret = process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123';
     return jwt.sign(
-      { id: user.id || user._id, email: user.email },
+      { id: user.id || user._id, email: user.email, name: user.name },
       secret,
       { expiresIn: '15m' }
     );
