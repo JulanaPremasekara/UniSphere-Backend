@@ -7,6 +7,7 @@ const cors = require('cors'); // Added for cross-origin support
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
 const connectDB = require('./middleware/db');
 const app = express();
@@ -43,6 +44,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
+app.use('/lost', lostRouter);
 
 // 4. API-Friendly Error Handling
 // Since you are building a backend for a mobile app, we should return JSON, not render Jade pages.
