@@ -2,11 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../../middleware/models/User');
 
 class AuthService {
-  /**
-   * Log into account
-   * @param {string} email
-   * @param {string} password
-   */
   static async login(email, password) {
     try {
       // 1. Find the user
@@ -31,10 +26,6 @@ class AuthService {
     }
   }
 
-  /**
-   * Register new account
-   * @param {Object} userData 
-   */
   static async signup(userData) {
     try {
       // 1. Check if user already exists
@@ -54,10 +45,6 @@ class AuthService {
     }
   }
 
-  /**
-   * Generate JWT token
-   * @param {Object} user 
-   */
   static generateAccessToken(user) {
     const secret = process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123';
     return jwt.sign(

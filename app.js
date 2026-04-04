@@ -3,15 +3,13 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cors = require('cors'); // Added for cross-origin support
+const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const eventsRouter = require('./routes/events');
 const connectDB = require('./middleware/db');
 const app = express();
-
-// Initialize Database Connection
 connectDB();
 
 // 1. CORS Configuration (Allows port 8081 to communicate with this server)
@@ -45,8 +43,6 @@ app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
 
 // 4. API-Friendly Error Handling
-// Since you are building a backend for a mobile app, we should return JSON, not render Jade pages.
-
 // Catch 404
 app.use(function(req, res, next) {
   next(createError(404));

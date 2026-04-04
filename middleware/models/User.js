@@ -10,5 +10,3 @@ const UserSchema = new mongoose.Schema({
 
 // The third argument forces the collection name to be exactly 'users'
 module.exports = mongoose.model('User', UserSchema, 'users');
-
-// module.exports = mongoose.model('User', UserSchema);

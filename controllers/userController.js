@@ -2,9 +2,6 @@ const AuthService = require('../routes/services/authService');
 const User = require('../middleware/models/User');
 
 class UserController {
-  /**
-   * Handle user login
-   */
   static async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -22,9 +19,6 @@ class UserController {
     }
   }
 
-  /**
-   * Handle user signup
-   */
   static async signup(req, res) {
     try {
       const { name, email, year, major, password } = req.body;
@@ -62,9 +56,6 @@ class UserController {
     }
   }
 
-  /**
-   * Update user profile
-   */
   static async updateProfile(req, res) {
     try {
       const { name, year, major, password } = req.body;
@@ -96,9 +87,6 @@ class UserController {
     }
   }
 
-  /**
-   * Delete user account
-   */
   static async deleteAccount(req, res) {
     try {
       const userId = req.user.id;
