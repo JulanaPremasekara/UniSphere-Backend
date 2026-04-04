@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
 const jwt = require('jsonwebtoken');
-
 // Middleware to protect routes
 const authenticateToken = require('../middleware/auth');
 

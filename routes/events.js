@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const EventController = require('../controllers/eventController');
-const authenticateToken = require('../middleware/auth'); // Import from the middleware folder
+const authenticateToken = require('../middleware/auth');
 
 // Registration routes (Must come before :id routes to avoid conflict)
 router.get('/me/registrations', authenticateToken, EventController.getUserRegistrations);
