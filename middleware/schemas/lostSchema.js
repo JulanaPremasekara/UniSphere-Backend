@@ -9,8 +9,8 @@ const createLostSchema = z.object({
 });
 
 const LostIDParamSchema = z.object({
-    id:z.number().int().positive('ID must be a positive integer'),
-})
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ID format'),
+});
 
 module.exports = {
     createLostSchema,
