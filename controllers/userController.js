@@ -11,9 +11,9 @@ class UserController {
 
   static async signup(req, res) {
     try {
-      const { name, email, year, major, password } = req.body;
+      const { name, email, phone, year, major, password } = req.body;
       if (!email || !password || !name) return res.status(400).json({ success: false, message: 'Missing required fields' });
-      const result = await AuthService.signup({ name, email, year, major, password });
+      const result = await AuthService.signup({ name, email, phone, year, major, password });
       res.status(result.success ? 201 : 400).json(result);
     } catch (e) { res.status(500).json({ success: false, message: 'Internal server error' }); }
   }
@@ -28,8 +28,8 @@ class UserController {
   static async updateProfile(req, res) {
     try {
       if (!req.user.id) return res.status(400).json({ success: false, message: "User ID not found in token" });
-      const { name, year, major, password } = req.body;
-      const updateData = password ? { name, year, major, password } : { name, year, major };
+      const { name, phone, year, major, password } = req.body;
+      const updateData = password ? { name,phone, year, major, password } : { name,phone, year, major };
       const user = await User.findByIdAndUpdate(req.user.id, updateData, { new: true }).select('-password');
       user ? res.status(200).json({ success: true, message: "Profile updated", user }) : res.status(404).json({ success: false, message: "User not found" });
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
