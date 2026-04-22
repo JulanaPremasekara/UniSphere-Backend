@@ -3,14 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
+    "@supabase/supabase-js": "^2.101.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.6",
     "debug": "~2.6.9",
+<<<<<<< HEAD
     "dotenv": "^17.4.2",
+=======
+    "dotenv": "^17.4.1",
+>>>>>>> e0dfadf63b0f98a988ddb99052fcd9d374e34be7
     "express": "^4.22.1",
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",
@@ -18,6 +23,10 @@
     "mongodb": "^7.1.1",
     "mongoose": "^9.4.1",
     "morgan": "^1.10.1",
+    "multer": "^2.1.1",
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
