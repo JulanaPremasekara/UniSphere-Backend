@@ -19,7 +19,8 @@ class AuthService {
       await new User(userData).save();
       return { success: true, message: 'User created successfully' };
     } catch (error) {
-      return { success: false, message: 'Signup failed. Please try again.' };
+      console.error("Signup error:", error);
+      return { success: false, message: 'Signup failed. Please try again.', error: error.message, stack: error.stack };
     }
   }
 

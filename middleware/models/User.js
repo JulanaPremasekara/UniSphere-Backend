@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   _id: { type: String },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  phone: { type: String },
   year: { type: String },
   major: { type: String },
   password: { type: String, required: true }
@@ -12,7 +13,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre('save', async function () {
   if (this.isNew && !this._id) {
-    const lastUser = await this.constructor.findOne().sort({ _id: -1 }).collation({ locale: 'en_US', numericOrdering: true });
+    const lastUser = await this.constructor.findOne({ _id: /^ST\d+$/ }).sort({ _id: -1 }).collation({ locale: 'en_US', numericOrdering: true });
     const num = lastUser ? parseInt(lastUser._id.replace('ST', ''), 10) : NaN;
     this._id = !isNaN(num) ? `ST${num + 1}` : 'ST1001';
   }
