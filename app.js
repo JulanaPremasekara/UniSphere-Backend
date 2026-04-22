@@ -4,11 +4,15 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
+
+
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
+const marketplaceRoutes = require('./routes/marketplace');
 const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
@@ -43,6 +47,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
 app.use('/lost', lostRouter);
+app.use('/api/marketplace', marketplaceRoutes);
 
 // 4. API-Friendly Error Handling
 // Catch 404
