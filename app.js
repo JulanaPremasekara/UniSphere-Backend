@@ -46,13 +46,12 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
-<<<<<<< HEAD
+
 app.use('/lost', lostRouter);
 app.use('/api/marketplace', marketplaceRoutes);
-=======
 app.use('/lost', lostRouter);    
 
->>>>>>> e0dfadf63b0f98a988ddb99052fcd9d374e34be7
+
 
 // 4. API-Friendly Error Handling
 // Catch 404

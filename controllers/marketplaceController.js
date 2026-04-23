@@ -1,5 +1,4 @@
-const Marketplace = require('../middleware/models/Marketplace');
-
+const Marketplace = require('../models/Marketplace');
 // Get all items
 exports.getAllItems = async (req, res) => {
     try {
