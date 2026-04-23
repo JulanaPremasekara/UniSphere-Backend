@@ -16,7 +16,12 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+<<<<<<< HEAD
+
+server.listen(port, '0.0.0.0');
+=======
 server.listen(port);
+>>>>>>> e3ebe478a7637feeb74bbbe18752327508cfd1ed
 server.on('error', onError);
 server.on('listening', onListening);
 /**
