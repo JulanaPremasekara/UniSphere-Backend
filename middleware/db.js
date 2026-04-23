@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
-    try {
-        // This looks for the MONGO_URI variable inside your .env file
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("✅ MongoDB Connected Successfully");
-    } catch (err) {
-        console.error("❌ Database connection failed:", err.message);
-        process.exit(1);
-    }
+  try {
+    // e.g., 'mongodb://localhost:27017/UniSphere'
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB Connected Successfully');
+  } catch (err) {
+    console.error('Database connection failed:', err.message);
+    process.exit(1); // Exit process if database fails to connect
+  }
 };
 
 module.exports = connectDB;
