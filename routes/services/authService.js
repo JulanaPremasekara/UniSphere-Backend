@@ -1,70 +1,31 @@
 const jwt = require('jsonwebtoken');
 const User = require('../../middleware/models/User');
+const bcrypt = require('bcryptjs');
 
 class AuthService {
-  /**
-   * Log into account
-   * @param {string} email
-   * @param {string} password
-   */
   static async login(email, password) {
     try {
-      // 1. Find the user
       const user = await User.findOne({ email });
-
-      // 2. Check if user exists and password matches
-      if (!user || user.password !== password) {
-        return { success: false, message: 'Invalid email or password' };
-      }
-
-      // 3. Generate token
-      const token = this.generateAccessToken(user);
-
-      return {
-        success: true,
-        token: token,
-        user: { email: user.email, name: user.name }
-      };
+      if (!user || !bcrypt.compareSync(password, user.password)) return { success: false, message: 'Invalid email or password' };
+      return { success: true, token: this.generateAccessToken(user), user: { email: user.email, name: user.name } };
     } catch (error) {
-      console.error('AuthService Login Technical Error:', error);
       return { success: false, message: 'Server error during authentication' };
     }
   }
 
-  /**
-   * Register new account
-   * @param {Object} userData 
-   */
   static async signup(userData) {
     try {
-      // 1. Check if user already exists
-      const existingUser = await User.findOne({ email: userData.email });
-      if (existingUser) {
-        return { success: false, message: 'User already exists' };
-      }
-
-      // 2. Create new user
-      const newUser = new User(userData);
-      await newUser.save();
-
+      if (await User.findOne({ email: userData.email })) return { success: false, message: 'User already exists' };
+      await new User(userData).save();
       return { success: true, message: 'User created successfully' };
     } catch (error) {
-      console.error('AuthService Signup Error:', error);
-      return { success: false, message: 'Signup failed. Please try again.' };
+      console.error("Signup error:", error);
+      return { success: false, message: 'Signup failed. Please try again.', error: error.message, stack: error.stack };
     }
   }
 
-  /**
-   * Generate JWT token
-   * @param {Object} user 
-   */
   static generateAccessToken(user) {
-    const secret = process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123';
-    return jwt.sign(
-      { id: user.id || user._id, email: user.email, name: user.name },
-      secret,
-      { expiresIn: '15m' }
-    );
+    return jwt.sign({ id: user.id || user._id, email: user.email, name: user.name }, process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123', { expiresIn: '15m' });
   }
 }
 

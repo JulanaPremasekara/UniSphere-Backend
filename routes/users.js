@@ -1,16 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
-const jwt = require('jsonwebtoken');
-
-// Middleware to protect routes
 const authenticateToken = require('../middleware/auth');
+const validate = require('../middleware/schemavalidate');
+const { registerUserSchema, loginUserSchema, updateUserSchema } = require('../middleware/schemas/userSchema');
 
-router.post('/login', UserController.login);
-router.post('/signup', UserController.signup);
-// Private/Protected route
+router.post('/login', validate(loginUserSchema), UserController.login);
+router.post('/signup', validate(registerUserSchema), UserController.signup);
 router.get('/me', authenticateToken, UserController.getProfile);
-router.put('/update', authenticateToken, UserController.updateProfile);
+router.put('/update', authenticateToken, validate(updateUserSchema), UserController.updateProfile);
 router.delete('/', authenticateToken, UserController.deleteAccount);
 
 module.exports = router;
