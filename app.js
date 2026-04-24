@@ -42,7 +42,8 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
-app.use('/lost', lostRouter);
+app.use('/lost', lostRouter);    
+
 
 // 4. API-Friendly Error Handling
 // Catch 404
