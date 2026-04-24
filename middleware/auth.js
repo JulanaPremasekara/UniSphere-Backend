@@ -5,9 +5,8 @@ const authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) return res.status(401).json({ success: false, message: 'Access Token Required' });
-
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123', (err, user) => {
-    if (err) return res.status(403).json({ success: false, message: 'Invalid or Expired Token' });
+    if (err) return res.status(403).json({ success: false, message: 'Your session has expired. Please sign in again.' });
     req.user = user;
     next();
   });
