@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
+const tutorRouter = require('./routes/tutors');
 const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
@@ -43,7 +44,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
 app.use('/lost', lostRouter);    
-
+app.use('/tutors', tutorRouter);
 
 // 4. API-Friendly Error Handling
 // Catch 404
