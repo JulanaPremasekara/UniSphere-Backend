@@ -1,21 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const marketplaceController = require('../controllers/marketplaceController');
+const authenticateToken = require('../middleware/auth');
+const validate = require('../middleware/schemavalidate');
+const { parseImage } = require('../middleware/multer');
+const { handleCloudUpload } = require('../middleware/supabaseUpload');
+const { createMarketplaceSchema, marketplaceIDParamSchema } = require('../middleware/schemas/marketPlaceSchema');
 
-
-// URL: /api/marketplace
+// Horizontal Route Definitions
 router.get('/', marketplaceController.getAllItems);
-router.post('/', marketplaceController.createItem); // NEW: Create
-
-// URL: /api/marketplace/:id
-router.get('/:id', marketplaceController.getItemById); // NEW: Get Specific
-router.put('/:id', marketplaceController.updateItem);
-// Backend: routes/marketplace.js
-// URL: /api/marketplace/:id
-router.get('/:id', marketplaceController.getItemById);
-router.put('/:id', marketplaceController.updateItem);
-router.delete('/:id', marketplaceController.deleteItem); // Simple & Clean
-
-module.exports = router;
+router.post('/', authenticateToken, parseImage('image'), handleCloudUpload('Images', 'MarketplaceItems'), validate(createMarketplaceSchema), marketplaceController.createItem);
+router.get('/:id', validate(marketplaceIDParamSchema, 'params'), marketplaceController.getItemById);
+router.put('/:id', authenticateToken, parseImage('image'), handleCloudUpload('Images', 'MarketplaceItems'), validate(marketplaceIDParamSchema, 'params'), validate(createMarketplaceSchema), marketplaceController.updateItem);
+router.delete('/:id', authenticateToken, validate(marketplaceIDParamSchema, 'params'), marketplaceController.deleteItem);
 
 module.exports = router;

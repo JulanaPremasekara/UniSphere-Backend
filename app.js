@@ -17,6 +17,8 @@ const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
 
+
+
 // 1. CORS Configuration (Allows port 8081 to communicate with this server)
 app.use(cors({
   origin: '*',

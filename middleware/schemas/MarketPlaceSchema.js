@@ -31,4 +31,4 @@ const MarketplaceIDParamSchema = z.object({
 module.exports = {
     createMarketplaceSchema,
     MarketplaceIDParamSchema
-};
+}; 
