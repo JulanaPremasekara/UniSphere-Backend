@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     // e.g., 'mongodb://localhost:27017/UniSphere'
-    await mongoose.connect('mongodb+srv://UniSphere:Unisphere%401234@cluster0.ilf6i7h.mongodb.net/UniSphere?retryWrites=true&w=majority');
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('MongoDB Connected Successfully');
   } catch (err) {
     console.error('Database connection failed:', err.message);

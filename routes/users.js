@@ -12,4 +12,5 @@ router.put('/update', authenticateToken, validate(updateUserSchema), UserControl
 router.delete('/', authenticateToken, UserController.deleteAccount);
 router.get('/:id', authenticateToken, UserController.getUserbyID);
 
+
 module.exports = router;
