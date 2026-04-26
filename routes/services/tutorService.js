@@ -1,5 +1,5 @@
 const Tutor = require('../../middleware/models/Tutor');
-
+//const { deleteFromCloud } = require('../../middleware/supabaseUpload');
 
 class TutorService {
     

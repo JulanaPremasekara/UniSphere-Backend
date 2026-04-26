@@ -22,7 +22,17 @@ const createTutorSchema = z.object({
         .max(500, 'Bio must be at most 500 characters')
         .optional(),
 
-    isOnline: z.boolean().optional(),
+    // NEW: Allow the image URL string injected by Supabase middleware
+    image: z.string()
+        .url('Invalid image URL format')
+        .optional()
+        .or(z.literal('')), // Allows empty string if no image is uploaded
+
+    // IMPROVED: Handle string-to-boolean conversion for FormData
+    isOnline: z.preprocess(
+        (val) => val === 'true' || val === true, 
+        z.boolean()
+    ).optional(),
     
     rating: z.number()
         .min(0)
@@ -35,11 +45,12 @@ const TutorIDParamSchema = z.object({
     id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid Tutor ID format'),
 });
 
-// Schema for updating the status only (Go Offline logic)
+// Schema for updating the status only
 const updateStatusSchema = z.object({
-    isOnline: z.boolean({
-        required_error: "Status is required",
-    }),
+    isOnline: z.preprocess(
+        (val) => val === 'true' || val === true, 
+        z.boolean({ required_error: "Status is required" })
+    ),
 });
 
 module.exports = {

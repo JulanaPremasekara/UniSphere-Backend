@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const TutorController = require('../controllers/tutorController');
 const authenticateToken = require('../middleware/auth');
-const { parseImage } = require('../middleware/multer');
+const { parseImage } = require('../middleware/multer'); 
 const { handleCloudUpload } = require('../middleware/supabaseUpload');
 
 // Import your schemas
@@ -16,7 +16,14 @@ const {
 const validate = require('../middleware/schemavalidate');
 
 // POST: Create profile (Validates Body)
-router.post('/setup', validate(createTutorSchema), TutorController.createTutor);
+router.post(
+  '/setup',
+  parseImage('image'),              
+  handleCloudUpload('Images', 'tutors'), 
+  validate(createTutorSchema), 
+  TutorController.createTutor
+);
+
 
 // GET: All online tutors (No specific validation needed unless you add search filters)
 router.get('/', TutorController.getAllTutors);
