@@ -11,4 +11,5 @@ router.get('/me', authenticateToken, UserController.getProfile);
 router.put('/update', authenticateToken, validate(updateUserSchema), UserController.updateProfile);
 router.delete('/', authenticateToken, UserController.deleteAccount);
 
+
 module.exports = router;
