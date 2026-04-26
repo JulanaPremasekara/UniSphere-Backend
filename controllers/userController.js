@@ -42,6 +42,13 @@ class UserController {
       user ? res.status(200).json({ success: true, message: "Account deleted" }) : res.status(404).json({ success: false, message: "User not found" });
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
   }
+
+  static async getUserbyID(req,res){
+    try {
+      const user = await User.findById(req.params.id).select('-password');
+      user ? res.status(200).json({ success: true, user }) : res.status(404).json({ success: false, message: "User not found" });
+    } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
+  }
 }
 
 module.exports = UserController;

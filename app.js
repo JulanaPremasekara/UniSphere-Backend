@@ -13,6 +13,7 @@ const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
 const marketplaceRoutes = require('./routes/marketplace');
+const housingRouter = require('./routes/housing');
 const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
@@ -52,6 +53,7 @@ app.use('/events', eventsRouter);
 app.use('/lost', lostRouter);
 app.use('/api/marketplace', marketplaceRoutes);
 app.use('/lost', lostRouter);    
+app.use('/housing', housingRouter);
 
 
 
