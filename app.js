@@ -4,15 +4,21 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
+
+
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
+const marketplaceRoutes = require('./routes/marketplace');
 const housingRouter = require('./routes/housing');
 const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
+
+
 
 // 1. CORS Configuration (Allows port 8081 to communicate with this server)
 app.use(cors({
@@ -43,8 +49,12 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
+
+app.use('/lost', lostRouter);
+app.use('/api/marketplace', marketplaceRoutes);
 app.use('/lost', lostRouter);    
 app.use('/housing', housingRouter);
+
 
 
 // 4. API-Friendly Error Handling
