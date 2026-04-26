@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
+const housingRouter = require('./routes/housing');
 const connectDB = require('./middleware/db');
 const app = express();
 connectDB();
@@ -43,6 +44,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
 app.use('/lost', lostRouter);    
+app.use('/housing', housingRouter);
 
 
 // 4. API-Friendly Error Handling

@@ -12,6 +12,7 @@ router.get('/', LostController.getAllLostItems);
 router.get('/:id', validate(LostIDParamSchema, 'params'), LostController.getLostItemById);
 router.put('/:id', authenticateToken, parseImage('image'), handleCloudUpload('Images','LostItems'), validate(LostIDParamSchema, 'params'), validate(createLostSchema), LostController.updateLost);
 router.delete('/:id', authenticateToken, validate(LostIDParamSchema, 'params'), LostController.deleteLost);
+router.patch("/:id/resolve", authenticateToken, LostController.resolveLost);
 
 
 module.exports = router;
