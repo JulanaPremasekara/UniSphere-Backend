@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const lostRouter = require('./routes/lost');
 const eventsRouter = require('./routes/events');
+const tutorRouter = require('./routes/tutors');
 const marketplaceRoutes = require('./routes/marketplace');
 const housingRouter = require('./routes/housing');
 const connectDB = require('./middleware/db');
@@ -53,6 +54,7 @@ app.use('/events', eventsRouter);
 app.use('/lost', lostRouter);
 app.use('/api/marketplace', marketplaceRoutes);
 app.use('/lost', lostRouter);    
+app.use('/tutors', tutorRouter);
 app.use('/housing', housingRouter);
 
 
