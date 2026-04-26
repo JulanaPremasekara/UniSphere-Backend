@@ -25,7 +25,7 @@ class AuthService {
   }
 
   static generateAccessToken(user) {
-    return jwt.sign({ id: user.id || user._id, email: user.email, name: user.name }, process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123', { expiresIn: '15m' });
+    return jwt.sign({ id: user.id || user._id, email: user.email, name: user.name }, process.env.ACCESS_TOKEN_SECRET || 'fallback_secret_key_123', { expiresIn: '30d' });
   }
 }
 

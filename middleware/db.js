@@ -2,12 +2,11 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // e.g., 'mongodb://localhost:27017/UniSphere'
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB Connected Successfully');
+    await mongoose.connect(process.env.MONGO_URI, { family: 4 });
+    console.log('✅ MongoDB Connected Successfully');
   } catch (err) {
-    console.error('Database connection failed:', err.message);
-    process.exit(1); // Exit process if database fails to connect
+    console.error('❌ Database connection failed:', err.message);
+    process.exit(1);
   }
 };
 
