@@ -10,5 +10,6 @@ router.post('/signup', validate(registerUserSchema), UserController.signup);
 router.get('/me', authenticateToken, UserController.getProfile);
 router.put('/update', authenticateToken, validate(updateUserSchema), UserController.updateProfile);
 router.delete('/', authenticateToken, UserController.deleteAccount);
+// router.get('/:id', authenticateToken, UserController.getProfilebyId);
 
 module.exports = router;

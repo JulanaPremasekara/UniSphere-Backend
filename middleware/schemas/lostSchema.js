@@ -5,7 +5,7 @@ const createLostSchema = z.object({
     category:z.enum(['Electronics', 'Clothing', 'Accessories', 'Documents', 'Other']),
     location:z.string().max(30,'Location must be at most 30 characters'),
     features:z.string().max(200,'Features must be at most 200 characters'),
-    status:z.enum(['lost', 'found']),
+    status:z.enum(['lost', 'found','resolved']),
     image:z.string().url().optional(),
 });
 
