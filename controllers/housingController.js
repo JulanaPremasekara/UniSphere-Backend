@@ -1,171 +1,118 @@
-const Housing = require('../models/Housing');
+const housingService = require("../routes/services/housingService");
 
-/**
- * @desc    Create a new housing entry
- * @route   POST /api/housing
- * @access  Private
- */
-exports.createHousing = async (req, res) => {
-  try {
-    const housingData = {
-      ...req.body,
-      postedBy: req.user._id // req.user populated by auth middleware
-    };
+class HousingController {
+  static async createHousing(req, res) {
+    try {
+      const validatedData = req.body;
 
-    const housing = await Housing.create(housingData);
+      const finalData = {
+        ...validatedData,
+        postedBy: req.user.id,
+      };
 
-    res.status(201).json({
-      success: true,
-      message: 'Housing post created successfully',
-      housing
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
+      const savedHousing = await housingService.createHousing(finalData);
 
-/**
- * @desc    Get all housing entries with search and location filtering
- * @route   GET /api/housing
- * @access  Public
- */
-exports.getAllHousing = async (req, res) => {
-  try {
-    const { search, location } = req.query;
-    let query = {};
-
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    if (location) {
-      query.address = { $regex: location, $options: 'i' };
-    }
-
-    const housings = await Housing.find(query).sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      housings
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
-/**
- * @desc    Get a single housing entry by ID
- * @route   GET /api/housing/:id
- * @access  Public
- */
-exports.getHousingById = async (req, res) => {
-  try {
-    const housing = await Housing.findById(req.params.id).populate('postedBy', 'name email phone');
-
-    if (!housing) {
-      return res.status(404).json({
+      res.status(201).json({
+        success: true,
+        message: "Housing post created successfully",
+        data: savedHousing,
+      });
+    } catch (error) {
+      console.error("Controller Error creating housing:", error);
+      res.status(500).json({
         success: false,
-        message: 'Housing post not found'
+        message: "A technical error occurred while creating housing post.",
       });
     }
-
-    res.status(200).json({
-      success: true,
-      housing
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Invalid Housing ID'
-    });
   }
-};
 
-/**
- * @desc    Update a housing entry
- * @route   PUT /api/housing/:id
- * @access  Private (Owner only)
- */
-exports.updateHousing = async (req, res) => {
-  try {
-    let housing = await Housing.findById(req.params.id);
+  static async getAllHousing(req, res) {
+    try {
+      const { search, location } = req.query;
 
-    if (!housing) {
-      return res.status(404).json({
+      const housings = await housingService.getAllHousing(search, location);
+
+      res.status(200).json({
+        success: true,
+        data: housings,
+      });
+    } catch (error) {
+      console.error("Controller Error fetching housing:", error);
+      res.status(500).json({
         success: false,
-        message: 'Housing post not found'
+        message: "A technical error occurred while fetching housing posts.",
       });
     }
-
-    // Check ownership
-    if (housing.postedBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Not authorized to update this post'
-      });
-    }
-
-    housing = await Housing.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
-
-    res.status(200).json({
-      success: true,
-      message: 'Housing post updated successfully',
-      housing
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message
-    });
   }
-};
 
-/**
- * @desc    Delete a housing entry
- * @route   DELETE /api/housing/:id
- * @access  Private (Owner only)
- */
-exports.deleteHousing = async (req, res) => {
-  try {
-    const housing = await Housing.findById(req.params.id);
+  static async getHousingById(req, res) {
+    try {
+      const { id } = req.params;
 
-    if (!housing) {
-      return res.status(404).json({
+      const housing = await housingService.getHousingById(id);
+
+      if (!housing) {
+        return res.status(404).json({
+          success: false,
+          message: "Housing post not found",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: housing,
+      });
+    } catch (error) {
+      console.error("Controller Error fetching housing by ID:", error);
+      res.status(500).json({
         success: false,
-        message: 'Housing post not found'
+        message: "A technical error occurred while fetching housing post.",
       });
     }
-
-    // Check ownership
-    if (housing.postedBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: 'Not authorized to delete this post'
-      });
-    }
-
-    await housing.deleteOne();
-
-    res.status(200).json({
-      success: true,
-      message: 'Housing post deleted successfully'
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
   }
-};
+
+  static async updateHousing(req, res) {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      const userId = req.user.id;
+
+      const result = await housingService.updateHousing(id, updateData, userId);
+
+      if (!result.success) {
+        return res.status(result.statusCode || 404).json(result);
+      }
+
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Controller Error updating housing:", error);
+      res.status(500).json({
+        success: false,
+        message: "A technical error occurred while updating housing post.",
+      });
+    }
+  }
+
+  static async deleteHousing(req, res) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const result = await housingService.deleteHousing(id, userId);
+
+      if (!result.success) {
+        return res.status(result.statusCode || 404).json(result);
+      }
+
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Controller Error deleting housing:", error);
+      res.status(500).json({
+        success: false,
+        message: "A technical error occurred while deleting housing post.",
+      });
+    }
+  }
+}
+
+module.exports = HousingController;

@@ -25,7 +25,11 @@ const createHousingSchema = baseHousingSchema.refine(data => data.contactPhone |
 
 const updateHousingSchema = baseHousingSchema.partial();
 
+const HosuingParamSchema = z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ID format'),
+});
 module.exports = {
   createHousingSchema,
   updateHousingSchema,
+  HosuingParamSchema
 };
