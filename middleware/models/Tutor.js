@@ -8,7 +8,8 @@ const tutorSchema = new mongoose.Schema({
   bio: { type: String },
   isOnline: { type: Boolean, default: true }, 
   rating: { type: Number, default: 4.9 },
-  image: { type: String }
+  image: { type: String },
+  createdBy: { type: String, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Tutor', tutorSchema);
