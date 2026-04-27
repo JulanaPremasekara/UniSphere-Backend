@@ -9,7 +9,7 @@ const { parseImage } = require('../middleware/multer');
 const { handleCloudUpload } = require('../middleware/supabaseUpload');
 const authenticateToken = require('../middleware/auth');
 const validate = require('../middleware/schemavalidate');
-const { createMarketplaceSchema } = require('../middleware/schemas/marketPlaceSchema');
+const { createMarketplaceSchema } = require('../middleware/schemas/MarketPlaceSchema');
 
 // --- ROUTES ---
 
