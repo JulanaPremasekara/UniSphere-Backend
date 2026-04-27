@@ -44,8 +44,7 @@ const studyGroupSchema = new mongoose.Schema(
     },
 
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String, ref: 'User', required: true
     },
   },
   { timestamps: true }
