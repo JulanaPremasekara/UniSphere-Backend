@@ -46,11 +46,18 @@ class TutorService {
                 message: "Tutor record not found in our database." 
             };
         }
- 
+        
+        if(deletedTutor.image){
+            const cleanup = await deleteFromCloud("Images", deletedTutor.image);
+
+            if(!cleanup.success){
+                console.error('Failed to delete tutor image from cloud:', cleanup.message);
+            }
+        }
         
         return { 
             success: true, 
-            message: "Tutor account removed successfully." 
+            message: "Tutor account and associated image removed successfully." 
         };
     }
 }

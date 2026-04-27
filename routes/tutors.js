@@ -18,6 +18,7 @@ const validate = require('../middleware/schemavalidate');
 // POST: Create profile (Validates Body)
 router.post(
   '/setup',
+  authenticateToken,
   parseImage('image'),              
   handleCloudUpload('Images', 'tutors'), 
   validate(createTutorSchema), 
@@ -32,12 +33,13 @@ router.get('/', TutorController.getAllTutors);
 router.get('/:id', validate(TutorIDParamSchema, 'params'), TutorController.getTutorById);
 
 // PATCH: Toggle online/offline status (Validates ID in Params AND Body)
-router.patch('/:id/status', 
+router.patch('/:id/status',
+    authenticateToken, 
     validate(TutorIDParamSchema, 'params'), 
     TutorController.toggleStatus
 );
 
 // DELETE: Remove tutor account (Validates ID in Params)
-router.delete('/:id', validate(TutorIDParamSchema, 'params'), TutorController.deleteTutor);
+router.delete('/:id',authenticateToken, validate(TutorIDParamSchema, 'params'), TutorController.deleteTutor);
 
 module.exports = router;
