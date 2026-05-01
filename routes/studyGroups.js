@@ -20,6 +20,8 @@ router.get("/", StudyGroupController.getAll);
 
 // Get one group
 router.get("/:id",validate(StudyGroupIDSchema, "params"),StudyGroupController.getById);
+// Join a study group - increase participants by 1
+router.patch("/:id/join",authenticateToken,alidate(StudyGroupIDSchema, "params"),StudyGroupController.join);
 
 // Update/Edit a group
 router.put(

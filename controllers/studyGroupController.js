@@ -61,7 +61,7 @@ class StudyGroupController {
     try {
       const updatedSession = await studyGroupService.updateSession(
         req.params.id,
-        req.body
+        req.body,
       );
 
       return res.status(200).json({
@@ -71,6 +71,26 @@ class StudyGroupController {
       });
     } catch (error) {
       return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  static async join(req, res) {
+    try {
+      const session = await studyGroupService.joinSession(
+        req.params.id,
+        req.user.id,
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Joined study group successfully",
+        data: session,
+      });
+    } catch (error) {
+      return res.status(error.statusCode || 400).json({
         success: false,
         message: error.message,
       });
