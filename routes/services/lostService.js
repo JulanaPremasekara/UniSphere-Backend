@@ -85,6 +85,7 @@ class LostService {
     // 2. If the record had an image, clean up Supabase
     if (deletedItem.image) {
       const cleanup = await deleteFromCloud("Images", deletedItem.image);
+      
 
       // If Supabase fails, we log it for the admin but the DB record is already gone
       if (!cleanup.success) {

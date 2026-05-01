@@ -42,6 +42,10 @@ const studyGroupSchema = new mongoose.Schema(
       type: [String],
       default: ["Bring your own questions", "Collaborate on exercises"],
     },
+    image:{
+      type: String,
+      default: null,
+    },
 
     createdBy: {
       type: String, ref: 'User', required: true

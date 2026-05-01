@@ -53,15 +53,8 @@ app.use("/lost", lostRouter);
 app.use("/tutors", tutorRouter);
 app.use("/housing", housingRouter);
 app.use("/api/marketplace", marketplaceRoutes);
-
-/*
-  IMPORTANT:
-  This supports both:
-  /studyGroups
-  /api/studyGroups
-*/
 app.use("/studyGroups", studyGroupsRouter);
-app.use("/api/studyGroups", studyGroupsRouter);
+
 
 app.use(function (req, res, next) {
   next(createError(404));
