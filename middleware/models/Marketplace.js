@@ -6,11 +6,9 @@ const marketplaceSchema = new mongoose.Schema({
     description: { type: String, required: true },
     location: { type: String, required: true },
     condition: { type: String, required: true },
-    contactNumber: { type: String, required: true }, // <--- ADD THIS LINE
+    contactNumber: { type: String, required: true },
     image: { type: String },
-    seller: {
-        name: { type: String, default: "UniSphere User" }
-    }
+    seller: { type: String, ref: 'User', required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Marketplace', marketplaceSchema);

@@ -5,7 +5,8 @@ class TutorController {
     static async createTutor(req, res) {
         try {
             const validatedData = req.body;
-            const savedTutor = await tutorService.registerTutor(validatedData);
+            const finalUser={...validatedData,createdBy:req.user.id,}
+            const savedTutor = await tutorService.registerTutor(finalUser);
             res.status(201).json({ success: true, data: savedTutor });
         } catch (error) {
             console.error('Error creating tutor:', error);

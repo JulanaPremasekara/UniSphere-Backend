@@ -51,9 +51,7 @@ class MarketplaceController {
       const finalData = {
         ...validatedData,
         image: validatedData.image || "https://via.placeholder.com/150",
-        seller: {
-          name: "UniSphere User",
-        },
+        seller: req.user.id, // Assuming req.user is populated by auth middleware
       };
 
       const savedItem = await marketplaceService.createItem(finalData);
