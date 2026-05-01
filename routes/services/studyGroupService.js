@@ -152,54 +152,35 @@ class StudyGroupService {
     };
   }
 
-  async joinSession(id, userId) {
+  async joinSession(id) {
     const session = await StudyGroup.findById(id);
 
     if (!session) {
       return {
         success: false,
-        message: "Session not found",
+        message: "Study group not found.",
       };
     }
 
-    // ensure participants exists
-    if (!session.participants) {
-      session.participants = 0;
-    }
-
-    // prevent overfill
-    if (session.participants >= session.maxParticipants) {
+    if ((session.participants || 0) >= session.maxParticipants) {
       return {
         success: false,
-        message: "Study group is already full",
+        message: "Study group is already full.",
       };
     }
 
-    // 🔥 OPTIONAL (but strongly recommended)
-    if (!session.joinedUsers) {
-      session.joinedUsers = [];
-    }
-
-    if (session.joinedUsers.includes(userId)) {
-      return {
-        success: false,
-        message: "You already joined this group",
-      };
-    }
-
-    // update
-    session.participants += 1;
-    session.joinedUsers.push(userId);
-
-    await session.save();
+    const updatedSession = await StudyGroup.findByIdAndUpdate(
+      id,
+      { $inc: { participants: 1 } },
+      { new: true },
+    );
 
     return {
       success: true,
-      data: session,
-      message: "Joined study group successfully",
+      data: updatedSession,
+      message: "Joined study group successfully.",
     };
   }
-
   async removeSession(id) {
     // 1. Delete session from MongoDB
     const deletedSession = await StudyGroup.findByIdAndDelete(id);
