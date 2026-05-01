@@ -79,20 +79,16 @@ class StudyGroupController {
 
   static async join(req, res) {
     try {
-      const session = await studyGroupService.joinSession(
+      const result = await studyGroupService.joinSession(
         req.params.id,
         req.user.id,
       );
 
-      return res.status(200).json({
-        success: true,
-        message: "Joined study group successfully",
-        data: session,
-      });
+      return res.status(result.success ? 200 : 400).json(result);
     } catch (error) {
-      return res.status(error.statusCode || 400).json({
+      return res.status(error.statusCode || 500).json({
         success: false,
-        message: error.message,
+        message: error.message || "Server error",
       });
     }
   }
