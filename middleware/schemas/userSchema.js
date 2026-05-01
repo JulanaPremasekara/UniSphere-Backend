@@ -20,6 +20,7 @@ const updateUserSchema = z.object({
   year: z.string().optional(),
   major: z.string().optional(),
   password: z.string().min(6, 'Password must be at least 6 characters').optional(),
+  image: z.string().optional(),
 });
 
 module.exports = {
