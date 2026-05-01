@@ -152,28 +152,29 @@ class StudyGroupService {
     };
   }
 
-  async joinSession(id) {
-    const session = await StudyGroup.findById(id);
+  async joinSession(id, userId) {
+    // ensure ObjectId type (important if you use ObjectId in schema)
+    const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    if (!session) {
-      return {
-        success: false,
-        message: "Study group not found.",
-      };
-    }
-
-    if ((session.participants || 0) >= session.maxParticipants) {
-      return {
-        success: false,
-        message: "Study group is already full.",
-      };
-    }
-
-    const updatedSession = await StudyGroup.findByIdAndUpdate(
-      id,
-      { $inc: { participants: 1 } },
+    const updatedSession = await StudyGroup.findOneAndUpdate(
+      {
+        _id: id,
+        $expr: { $lt: ["$participants", "$maxParticipants"] }, // not full
+        joinedUsers: { $ne: userObjectId }, // not already joined
+      },
+      {
+        $inc: { participants: 1 },
+        $push: { joinedUsers: userObjectId },
+      },
       { new: true },
     );
+
+    if (!updatedSession) {
+      return {
+        success: false,
+        message: "Already joined or study group is full.",
+      };
+    }
 
     return {
       success: true,
@@ -181,6 +182,7 @@ class StudyGroupService {
       message: "Joined study group successfully.",
     };
   }
+
   async removeSession(id) {
     // 1. Delete session from MongoDB
     const deletedSession = await StudyGroup.findByIdAndDelete(id);
