@@ -42,16 +42,24 @@ const studyGroupSchema = new mongoose.Schema(
       type: [String],
       default: ["Bring your own questions", "Collaborate on exercises"],
     },
-    image:{
+    image: {
       type: String,
       default: null,
     },
+    joinedUsers: [
+      {
+        type: String,
+        ref: "User",
+      },
+    ],
 
     createdBy: {
-      type: String, ref: 'User', required: true
+      type: String,
+      ref: "User",
+      required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("StudyGroup", studyGroupSchema);
