@@ -22,7 +22,7 @@ class StudyGroupService {
       maxParticipants === null
     ) {
       throw new Error(
-        "Subject, location, time, and max participants are required"
+        "Subject, location, time, and max participants are required",
       );
     }
 
@@ -44,7 +44,7 @@ class StudyGroupService {
           ? learningGoals
           : ["Bring your own questions", "Collaborate on exercises"],
       image: image || null,
-      createdBy:createdBy,
+      createdBy: createdBy,
     });
 
     return await session.save();
@@ -90,7 +90,7 @@ class StudyGroupService {
       maxParticipants === null
     ) {
       throw new Error(
-        "Subject, location, time, and max participants are required"
+        "Subject, location, time, and max participants are required",
       );
     }
 
@@ -131,7 +131,7 @@ class StudyGroupService {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     // 3. Delete old image if new image changed
@@ -139,7 +139,9 @@ class StudyGroupService {
       const cleanup = await deleteFromCloud("Images", oldImageUrl);
 
       if (!cleanup.success) {
-        console.warn(`Old study group image cleanup failed: ${cleanup.message}`);
+        console.warn(
+          `Old study group image cleanup failed: ${cleanup.message}`,
+        );
       }
     }
 
@@ -147,6 +149,54 @@ class StudyGroupService {
       success: true,
       data: updatedSession,
       message: "Session updated successfully",
+    };
+  }
+
+  async joinSession(id, userId) {
+    const session = await StudyGroup.findById(id);
+
+    if (!session) {
+      return {
+        success: false,
+        message: "Session not found",
+      };
+    }
+
+    // ensure participants exists
+    if (!session.participants) {
+      session.participants = 0;
+    }
+
+    // prevent overfill
+    if (session.participants >= session.maxParticipants) {
+      return {
+        success: false,
+        message: "Study group is already full",
+      };
+    }
+
+    // 🔥 OPTIONAL (but strongly recommended)
+    if (!session.joinedUsers) {
+      session.joinedUsers = [];
+    }
+
+    if (session.joinedUsers.includes(userId)) {
+      return {
+        success: false,
+        message: "You already joined this group",
+      };
+    }
+
+    // update
+    session.participants += 1;
+    session.joinedUsers.push(userId);
+
+    await session.save();
+
+    return {
+      success: true,
+      data: session,
+      message: "Joined study group successfully",
     };
   }
 
