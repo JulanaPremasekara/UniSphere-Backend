@@ -20,6 +20,7 @@ const createStudyGroupSchema = z.object({
   tag: z.string().optional(),
 
   learningGoals: z.array(z.string()).optional(),
+  image:z.string().optional(),
 });
 
 const StudyGroupIDSchema = z.object({

@@ -3,9 +3,12 @@ const studyGroupService = require("../routes/services/studyGroupService");
 class StudyGroupController {
   static async create(req, res) {
     try {
-      console.log("REQ BODY:", req.body);
-
-      const session = await studyGroupService.createSession(req.body);
+      const data = req.body;
+      const finalData = {
+        ...data,
+        createdBy: req.user.id,
+      };
+      const session = await studyGroupService.createSession(finalData);
 
       return res.status(201).json({
         success: true,
