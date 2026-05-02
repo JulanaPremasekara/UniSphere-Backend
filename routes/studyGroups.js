@@ -25,7 +25,7 @@ router.patch("/:id/join",authenticateToken,validate(StudyGroupIDSchema, "params"
 
 // Update/Edit a group
 router.put(
-  "/:id",authenticateToken,parseImage('image'),handleCloudUpload('Images','StudyGroups'),validate(StudyGroupIDSchema, "params"),validate(createStudyGroupSchema),StudyGroupController.update);
+  "/:id",authenticateToken,parseImage('image'),handleCloudUpload('Images','StudyGroups'),parseFormData({ numbers: ['maxParticipants'],arrays: ["learningGoals"], }),validate(StudyGroupIDSchema, "params"),validate(createStudyGroupSchema),StudyGroupController.update);
 
 // Delete/Cancel a group
 router.delete("/:id",authenticateToken,validate(StudyGroupIDSchema, "params"),StudyGroupController.delete);
