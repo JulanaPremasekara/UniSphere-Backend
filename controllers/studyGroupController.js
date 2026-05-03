@@ -93,6 +93,22 @@ class StudyGroupController {
     }
   }
 
+  static async leave(req, res) {
+    try {
+      const result = await studyGroupService.leaveSession(
+        req.params.id,
+        req.user.id,
+      );
+
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (error) {
+      return res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message || "Server error",
+      });
+    }
+  }
+
   static async delete(req, res) {
     try {
       const result = await studyGroupService.removeSession(req.params.id);

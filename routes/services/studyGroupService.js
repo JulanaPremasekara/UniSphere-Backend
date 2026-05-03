@@ -153,18 +153,15 @@ class StudyGroupService {
   }
 
   async joinSession(id, userId) {
-    // ensure ObjectId type (important if you use ObjectId in schema)
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-
     const updatedSession = await StudyGroup.findOneAndUpdate(
       {
         _id: id,
         $expr: { $lt: ["$participants", "$maxParticipants"] }, // not full
-        joinedUsers: { $ne: userObjectId }, // not already joined
+        joinedUsers: { $ne: userId }, // not already joined
       },
       {
         $inc: { participants: 1 },
-        $push: { joinedUsers: userObjectId },
+        $push: { joinedUsers: userId },
       },
       { new: true },
     );
@@ -180,6 +177,33 @@ class StudyGroupService {
       success: true,
       data: updatedSession,
       message: "Joined study group successfully.",
+    };
+  }
+
+  async leaveSession(id, userId) {
+    const updatedSession = await StudyGroup.findOneAndUpdate(
+      {
+        _id: id,
+        joinedUsers: userId, // must be joined
+      },
+      {
+        $inc: { participants: -1 },
+        $pull: { joinedUsers: userId },
+      },
+      { new: true },
+    );
+
+    if (!updatedSession) {
+      return {
+        success: false,
+        message: "You are not a participant of this group.",
+      };
+    }
+
+    return {
+      success: true,
+      data: updatedSession,
+      message: "Left study group successfully.",
     };
   }
 

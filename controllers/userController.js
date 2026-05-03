@@ -1,5 +1,7 @@
 const AuthService = require('../routes/services/authService');
 const User = require('../middleware/models/User');
+const Event = require('../middleware/models/Event');
+const StudyGroup = require('../middleware/models/StudyGroup');
 const { deleteFromCloud } = require('../middleware/supabaseUpload');
 
 class UserController {
@@ -21,8 +23,25 @@ class UserController {
 
   static async getProfile(req, res) {
     try {
-      const user = await User.findById(req.user.id).select('-password');
-      user ? res.status(200).json({ success: true, user }) : res.status(404).json({ success: false, message: "User not found" });
+      const user = await User.findById(req.user.id).select('-password').lean();
+      if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+      const eventCount = await Event.countDocuments({ registrants: req.user.id });
+      const groupCount = await StudyGroup.countDocuments({ 
+        $or: [
+          { joinedUsers: req.user.id }, 
+          { createdBy: req.user.id }
+        ] 
+      });
+
+      res.status(200).json({ 
+        success: true, 
+        user: { 
+          ...user, 
+          eventCount, 
+          groupCount 
+        } 
+      });
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
   }
 
@@ -69,10 +88,27 @@ class UserController {
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
   }
 
-  static async getUserbyID(req,res){
+  static async getUserbyID(req, res) {
     try {
-      const user = await User.findById(req.params.id).select('-password');
-      user ? res.status(200).json({ success: true, user }) : res.status(404).json({ success: false, message: "User not found" });
+      const user = await User.findById(req.params.id).select('-password').lean();
+      if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+      const eventCount = await Event.countDocuments({ registrants: req.params.id });
+      const groupCount = await StudyGroup.countDocuments({ 
+        $or: [
+          { joinedUsers: req.params.id }, 
+          { createdBy: req.params.id }
+        ] 
+      });
+
+      res.status(200).json({ 
+        success: true, 
+        user: { 
+          ...user, 
+          eventCount, 
+          groupCount 
+        } 
+      });
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
   }
 }
