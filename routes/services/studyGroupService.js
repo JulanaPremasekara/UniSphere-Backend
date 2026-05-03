@@ -203,6 +203,33 @@ class StudyGroupService {
     };
   }
 
+  async leaveSession(id, userId) {
+    const updatedSession = await StudyGroup.findOneAndUpdate(
+      {
+        _id: id,
+        joinedUsers: userId, // must be joined
+      },
+      {
+        $inc: { participants: -1 },
+        $pull: { joinedUsers: userId },
+      },
+      { new: true },
+    );
+
+    if (!updatedSession) {
+      return {
+        success: false,
+        message: "You are not a participant of this group.",
+      };
+    }
+
+    return {
+      success: true,
+      data: updatedSession,
+      message: "Left study group successfully.",
+    };
+  }
+
   async removeSession(id) {
     // 1. Delete session from MongoDB
     const deletedSession = await StudyGroup.findByIdAndDelete(id);

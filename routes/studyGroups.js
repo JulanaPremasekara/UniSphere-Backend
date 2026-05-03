@@ -23,6 +23,9 @@ router.get("/:id",validate(StudyGroupIDSchema, "params"),StudyGroupController.ge
 // Join a study group - increase participants by 1
 router.patch("/:id/join",authenticateToken,validate(StudyGroupIDSchema, "params"),StudyGroupController.join);
 
+// Leave a study group
+router.delete("/:id/leave",authenticateToken,validate(StudyGroupIDSchema, "params"),StudyGroupController.leave);
+
 // Update/Edit a group
 router.put(
   "/:id",authenticateToken,parseImage('image'),handleCloudUpload('Images','StudyGroups'),parseFormData({ numbers: ['maxParticipants'],arrays: ["learningGoals"], }),validate(StudyGroupIDSchema, "params"),validate(createStudyGroupSchema),StudyGroupController.update);
