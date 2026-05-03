@@ -156,20 +156,43 @@ class StudyGroupService {
     const updatedSession = await StudyGroup.findOneAndUpdate(
       {
         _id: id,
-        $expr: { $lt: ["$participants", "$maxParticipants"] }, // not full
-        joinedUsers: { $ne: userId }, // not already joined
+        $expr: { $lt: ["$participants", "$maxParticipants"] },
+        joinedUsers: { $ne: userId }, 
       },
       {
         $inc: { participants: 1 },
-        $push: { joinedUsers: userId },
+        $addToSet: { joinedUsers: userId }, 
       },
       { new: true },
     );
 
     if (!updatedSession) {
+      const session = await StudyGroup.findById(id);
+
+      if (!session) {
+        return {
+          success: false,
+          message: "Study group not found.",
+        };
+      }
+
+      if (session.joinedUsers.includes(userId)) {
+        return {
+          success: false,
+          message: "You have already joined this study group.",
+        };
+      }
+
+      if (session.participants >= session.maxParticipants) {
+        return {
+          success: false,
+          message: "Study group is full.",
+        };
+      }
+
       return {
         success: false,
-        message: "Already joined or study group is full.",
+        message: "Unable to join study group.",
       };
     }
 
