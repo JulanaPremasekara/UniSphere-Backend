@@ -49,20 +49,24 @@ class UserController {
     try {
       if (!req.user.id) return res.status(400).json({ success: false, message: "User ID not found in token" });
       const { name, phone, year, major, password, image } = req.body;
-      
-      const updateData = { name, phone, year, major };
-      if (password) updateData.password = password;
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+      if (name) user.name = name;
+      if (phone) user.phone = phone;
+      if (year) user.year = year;
+      if (major) user.major = major;
+      if (password) user.password = password;
       if (image) {
-        // Delete old image if it exists
-        const currentUser = await User.findById(req.user.id);
-        if (currentUser && currentUser.image) {
-          await deleteFromCloud('Images', currentUser.image);
+        if (user.image) {
+          await deleteFromCloud('Images', user.image);
         }
-        updateData.image = image;
+        user.image = image;
       }
 
-      const user = await User.findByIdAndUpdate(req.user.id, updateData, { new: true }).select('-password');
-      user ? res.status(200).json({ success: true, message: "Profile updated", user }) : res.status(404).json({ success: false, message: "User not found" });
+      await user.save();
+      const updatedUser = await User.findById(req.user.id).select('-password');
+      res.status(200).json({ success: true, message: "Profile updated", user: updatedUser });
     } catch (e) { res.status(500).json({ success: false, message: "Server error" }); }
   }
 
