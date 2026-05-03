@@ -67,4 +67,27 @@ app.use(function (err, req, res, next) {
   });
 });
 
+const Event = require("./middleware/models/Event");
+const { deleteFromCloud } = require("./middleware/supabaseUpload");
+
+// Auto-delete expired events every 10 minutes
+setInterval(async () => {
+  try {
+    const now = new Date();
+    const expiredEvents = await Event.find({ endDate: { $lt: now } });
+    
+    if (expiredEvents.length > 0) {
+      for (const event of expiredEvents) {
+        if (event.image) {
+          await deleteFromCloud('Images', event.image);
+        }
+        await Event.findByIdAndDelete(event._id);
+        console.log(`>>> [Auto-Cleanup] Deleted expired event: ${event.title}`);
+      }
+    }
+  } catch (error) {
+    console.error(">>> [Auto-Cleanup] Error in event cleanup job:", error.message);
+  }
+}, 10 * 60 * 1000);
+
 module.exports = app;
